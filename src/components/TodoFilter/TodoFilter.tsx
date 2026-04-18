@@ -1,41 +1,44 @@
 import React from 'react';
+import { Select } from '../FormComponents/Select';
+import { Input } from '../FormComponents/Input';
 
-export const TodoFilter: React.FC = () => {
-  return (
-    <form
-      className="field has-addons"
-      onSubmit={event => event.preventDefault()}
-    >
-      <p className="control">
-        <span className="select">
-          <select data-cy="statusSelect">
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-          </select>
-        </span>
-      </p>
+type Props = {
+  valueInput: string;
+  onSelectOption: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClearSearch: () => void;
+};
 
-      <p className="control is-expanded has-icons-left has-icons-right">
-        <input
-          data-cy="searchInput"
-          type="text"
-          className="input"
-          placeholder="Search..."
-        />
-        <span className="icon is-left">
-          <i className="fas fa-magnifying-glass" />
-        </span>
+export const TodoFilter: React.FC<Props> = ({
+  valueInput,
+  onSelectOption,
+  onChangeInput,
+  onClearSearch,
+}) => (
+  <form className="field has-addons">
+    <p className="control">
+      <span className="select">
+        <Select onChange={onSelectOption} />
+      </span>
+    </p>
 
-        <span className="icon is-right" style={{ pointerEvents: 'all' }}>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+    <p className="control is-expanded has-icons-left has-icons-right">
+      <Input onChangeInput={onChangeInput} value={valueInput} />
+      <span className="icon is-left">
+        <i className="fas fa-magnifying-glass" />
+      </span>
+
+      <span className="icon is-right" style={{ pointerEvents: 'all' }}>
+        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+        {valueInput && (
           <button
             data-cy="clearSearchButton"
             type="button"
             className="delete"
+            onClick={onClearSearch}
           />
-        </span>
-      </p>
-    </form>
-  );
-};
+        )}
+      </span>
+    </p>
+  </form>
+);
