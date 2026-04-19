@@ -10,19 +10,16 @@ import { Todo } from './types/Todo';
 import { getTodos, getUser } from './api';
 import { User } from './types/User';
 import { ModalProvider } from './components/ModalContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from './app/store';
 import { setTodos } from './features/todos';
 import { setCurrentTodo } from './features/currentTodo';
-import { setQuery, setStatus } from './features/filter';
+import { setQuery } from './features/filter';
+import { useAppDispatch, useAppSelector } from './app/hooks';
 
 export const App: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const todos = useSelector((state: RootState) => state.todos);
-  const todoForSelectUser = useSelector(
-    (state: RootState) => state.currentTodo,
-  );
-  const { status, query } = useSelector((state: RootState) => state.filter);
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector(state => state.todos);
+  const todoForSelectUser = useAppSelector(state => state.currentTodo);
+  const { status, query } = useAppSelector(state => state.filter);
 
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,10 +35,6 @@ export const App: React.FC = () => {
       )
       .finally(() => setIsLoading(false));
   }, [dispatch]);
-
-  const onSelectOption = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setStatus(event.target.value as 'all' | 'completed' | 'active'));
-  };
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setQuery(event.target.value));
@@ -97,7 +90,6 @@ export const App: React.FC = () => {
 
             <div className="block">
               <TodoFilter
-                onSelectOption={onSelectOption}
                 onChangeInput={onChangeInput}
                 onClearSearch={onClearSearch}
                 valueInput={query}
@@ -105,21 +97,32 @@ export const App: React.FC = () => {
             </div>
 
             <div className="block">
-              {isLoading && <Loader />}
+              {isLoading ? (
+                <Loader />
+              ) : (
+                errorMessage || (
+                  <TodoList
+                    todos={filteredTodos}
+                    onOpenModal={onOpenModal}
+                    errorUser={errorUserMessage}
+                  />
+                )
+              )}
+              {/* {isLoading && <Loader />}
               {errorMessage || (
                 <TodoList
                   todos={filteredTodos}
                   onOpenModal={onOpenModal}
                   errorUser={errorUserMessage}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </div>
       </div>
 
       {errorUserMessage ? (
-        <>{alert('User data loading error, please relod peage')}</>
+        <div>User data loading error, please relod peage</div>
       ) : (
         todoForSelectUser && (
           <TodoModal

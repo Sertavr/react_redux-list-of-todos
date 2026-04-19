@@ -4,21 +4,19 @@ import { Input } from '../FormComponents/Input';
 
 type Props = {
   valueInput: string;
-  onSelectOption: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClearSearch: () => void;
 };
 
 export const TodoFilter: React.FC<Props> = ({
   valueInput,
-  onSelectOption,
   onChangeInput,
   onClearSearch,
 }) => (
   <form className="field has-addons">
     <p className="control">
       <span className="select">
-        <Select onChange={onSelectOption} />
+        <Select />
       </span>
     </p>
 

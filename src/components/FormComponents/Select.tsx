@@ -1,13 +1,18 @@
 import React from 'react';
 import { options } from '../../constants/constants';
+import { setStatus } from '../../features/filter';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
-type Props = {
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-};
+export const Select: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector(state => state.filter);
 
-export const Select: React.FC<Props> = ({ onChange }) => {
+  const onSelectOption = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setStatus(event.target.value as 'all' | 'completed' | 'active'));
+  };
+
   return (
-    <select data-cy="statusSelect" onChange={onChange}>
+    <select data-cy="statusSelect" onChange={onSelectOption} value={status}>
       {options.map(option => {
         const [value, name] = option;
 
