@@ -36,6 +36,18 @@ export const App: React.FC = () => {
       .finally(() => setIsLoading(false));
   }, [dispatch]);
 
+  useEffect(() => {
+    const idTimeout = setTimeout(() => {
+      if (errorMessage) {
+        setErrorMessage('');
+      } else if (errorUserMessage) {
+        setErrorUserMessage('');
+      }
+    }, 5000);
+
+    return () => clearTimeout(idTimeout);
+  }, [errorMessage, errorUserMessage]);
+
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setQuery(event.target.value));
   };
@@ -99,14 +111,14 @@ export const App: React.FC = () => {
             <div className="block">
               {isLoading ? (
                 <Loader />
+              ) : errorMessage ? (
+                <div data-cy="error">{errorMessage}</div>
               ) : (
-                errorMessage || (
-                  <TodoList
-                    todos={filteredTodos}
-                    onOpenModal={onOpenModal}
-                    errorUser={errorUserMessage}
-                  />
-                )
+                <TodoList
+                  todos={filteredTodos}
+                  onOpenModal={onOpenModal}
+                  errorUser={errorUserMessage}
+                />
               )}
               {/* {isLoading && <Loader />}
               {errorMessage || (
@@ -122,7 +134,7 @@ export const App: React.FC = () => {
       </div>
 
       {errorUserMessage ? (
-        <div>User data loading error, please relod peage</div>
+        <div>User data loading error, please reload peage</div>
       ) : (
         todoForSelectUser && (
           <TodoModal
