@@ -14,6 +14,8 @@ import { setTodos } from './features/todos';
 import { setCurrentTodo } from './features/currentTodo';
 import { setQuery } from './features/filter';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -94,33 +96,34 @@ export const App: React.FC = () => {
   };
 
   return (
-    <ModalProvider>
-      <div className="section">
-        <div className="container">
-          <div className="box">
-            <h1 className="title">Todos:</h1>
+    <Provider store={store}>
+      <ModalProvider>
+        <div className="section">
+          <div className="container">
+            <div className="box">
+              <h1 className="title">Todos:</h1>
 
-            <div className="block">
-              <TodoFilter
-                onChangeInput={onChangeInput}
-                onClearSearch={onClearSearch}
-                valueInput={query}
-              />
-            </div>
-
-            <div className="block">
-              {isLoading ? (
-                <Loader />
-              ) : errorMessage ? (
-                <div data-cy="error">{errorMessage}</div>
-              ) : (
-                <TodoList
-                  todos={filteredTodos}
-                  onOpenModal={onOpenModal}
-                  errorUser={errorUserMessage}
+              <div className="block">
+                <TodoFilter
+                  onChangeInput={onChangeInput}
+                  onClearSearch={onClearSearch}
+                  valueInput={query}
                 />
-              )}
-              {/* {isLoading && <Loader />}
+              </div>
+
+              <div className="block">
+                {isLoading ? (
+                  <Loader />
+                ) : errorMessage ? (
+                  <div data-cy="error">{errorMessage}</div>
+                ) : (
+                  <TodoList
+                    todos={filteredTodos}
+                    onOpenModal={onOpenModal}
+                    errorUser={errorUserMessage}
+                  />
+                )}
+                {/* {isLoading && <Loader />}
               {errorMessage || (
                 <TodoList
                   todos={filteredTodos}
@@ -128,22 +131,23 @@ export const App: React.FC = () => {
                   errorUser={errorUserMessage}
                 />
               )} */}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {errorUserMessage ? (
-        <div>User data loading error, please reload peage</div>
-      ) : (
-        todoForSelectUser && (
-          <TodoModal
-            user={user}
-            todo={todoForSelectUser}
-            onCloseModal={onCloseModal}
-          />
-        )
-      )}
-    </ModalProvider>
+        {errorUserMessage ? (
+          <div>User data loading error, please reload peage</div>
+        ) : (
+          todoForSelectUser && (
+            <TodoModal
+              user={user}
+              todo={todoForSelectUser}
+              onCloseModal={onCloseModal}
+            />
+          )
+        )}
+      </ModalProvider>
+    </Provider>
   );
 };
